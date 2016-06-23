@@ -13,12 +13,11 @@ import java.util.List;
  * Created by User on 6/22/2016.
  */
 public class PhoneAdapter extends ArrayAdapter {
-    List list = new ArrayList();
+    public ArrayList<Phone> list = new ArrayList();
 
     public PhoneAdapter(Context context, int resource) {
         super(context, resource);
     }
-
 
     public void add(Phone object) {
         super.add(object);
@@ -46,8 +45,7 @@ public class PhoneAdapter extends ArrayAdapter {
             row = layoutInflater.inflate(R.layout.row_layout, parent, false);
             phoneHolder = new PhoneHolder();
             phoneHolder.tx_name = (TextView) row.findViewById(R.id.tx_name);
-            phoneHolder.tx_isLost = (TextView) row.findViewById(R.id.tx_isLost);
-            phoneHolder.tx_ringRequest = (TextView) row.findViewById(R.id.tx_ringRequest);
+            phoneHolder.tx_status = (TextView) row.findViewById(R.id.tx_status);
             row.setTag(phoneHolder);
         }
         else{
@@ -56,13 +54,17 @@ public class PhoneAdapter extends ArrayAdapter {
 
         Phone phone = (Phone) this.getItem(position);
         phoneHolder.tx_name.setText(phone.getPhoneName());
-        phoneHolder.tx_isLost.setText(phone.getIsLost());
-        phoneHolder.tx_ringRequest.setText(phone.getRingRequest());
+        if(phone.getIsLost().equals("0")) {
+            phoneHolder.tx_status.setText("Status: Normal");
+        }
+        else{
+            phoneHolder.tx_status.setText("Status: Lost");
+        }
         return row;
     }
 
     static class PhoneHolder{
-        TextView tx_name, tx_isLost, tx_ringRequest;
+        TextView tx_name, tx_status;
     }
 
 }
