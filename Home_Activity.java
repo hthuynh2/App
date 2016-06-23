@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,11 @@ public class Home_Activity extends AppCompatActivity {
 
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_);
@@ -49,10 +55,20 @@ public class Home_Activity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textView);
         listView = (ListView) findViewById(R.id.listView);
         set_num_devices(username);
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Phone selectedPhone = phoneAdapter.list.get(position);
+                Intent intent = new Intent(getApplicationContext(), PhoneInfo_Activity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("isLost", selectedPhone.getIsLost());
+                intent.putExtra("phoneName", selectedPhone.getPhoneName());
+                startActivity(intent);
+            }
+        });
     }
 
-    private void set_num_devices(final String username) {
+    protected void set_num_devices(final String username) {
         final Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -93,7 +109,7 @@ public class Home_Activity extends AppCompatActivity {
 
                     OutputStream outputStream = httpURLConnection.getOutputStream();
                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                    String post_data = URLEncoder.encode("user_name", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
+                    String post_data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
                     bufferedWriter.write(post_data);
                     bufferedWriter.flush();
                     bufferedWriter.close();
